@@ -294,14 +294,14 @@ struct adin2111_mk_priv {
 | **Bridge State** | `bridge` pointer + FDB | None | 100% |
 | **Total Runtime** | ~650 bytes | ~350 bytes | **46%** |
 
-#### CPU Overhead Analysis
+#### CPU Overhead Analysis *(ANTICIPATED - NOT MEASURED)*
 
-| Operation | Pristine Driver | MK Driver | Improvement |
+| Operation | Pristine Driver | MK Driver | Anticipated Improvement |
 |-----------|----------------|-----------|-------------|
-| **Interrupt Processing** | Dual port + bridge decision | Single port direct | 40-50% |
-| **Packet TX** | Bridge lookup + port selection | Direct transmission | 35% |
-| **Packet RX** | FDB learning + forwarding | Direct reception | 30% |
-| **MAC Management** | Dual port filtering | Single port filtering | 25% |
+| **Interrupt Processing** | Dual port + bridge decision | Single port direct | 40-50% *(ANTICIPATED)* |
+| **Packet TX** | Bridge lookup + port selection | Direct transmission | 35% *(ANTICIPATED)* |
+| **Packet RX** | FDB learning + forwarding | Direct reception | 30% *(ANTICIPATED)* |
+| **MAC Management** | Dual port filtering | Single port filtering | 25% *(ANTICIPATED)* |
 
 ## Code Structure Analysis
 
@@ -344,51 +344,57 @@ struct adin2111_mk_priv {
 
 ## Performance Analysis
 
-### Benchmark Results
+> **⚠️ IMPORTANT DISCLAIMER**: The performance metrics in this section are **ANTICIPATED RESULTS** based on architectural analysis and code structure comparison. These values have **NOT BEEN MEASURED** on actual hardware. Real-world performance may vary significantly based on hardware configuration, kernel version, system load, and network conditions. Actual benchmarking should be performed before making performance claims.
 
-#### Throughput Performance
-| Metric | Pristine Driver | MK Driver | Improvement |
+### Anticipated Performance Results *(NOT MEASURED)*
+
+#### Throughput Performance *(ANTICIPATED - NOT MEASURED)*
+| Metric | Pristine Driver | MK Driver | Anticipated Improvement |
 |--------|----------------|-----------|-------------|
-| **Max Throughput** | 9.2 Mbps | 9.5 Mbps | +3.3% |
-| **CPU Usage @ Max** | 15% | 10% | +33% |
-| **Latency (avg)** | 2.1ms | 1.6ms | +24% |
-| **Memory Bandwidth** | 2.1 MB/s | 1.4 MB/s | +33% |
+| **Max Throughput** | 9.2 Mbps *(NOT MEASURED)* | 9.5 Mbps *(NOT MEASURED)* | +3.3% *(ANTICIPATED)* |
+| **CPU Usage @ Max** | 15% *(NOT MEASURED)* | 10% *(NOT MEASURED)* | +33% *(ANTICIPATED)* |
+| **Latency (avg)** | 2.1ms *(NOT MEASURED)* | 1.6ms *(NOT MEASURED)* | +24% *(ANTICIPATED)* |
+| **Memory Bandwidth** | 2.1 MB/s *(NOT MEASURED)* | 1.4 MB/s *(NOT MEASURED)* | +33% *(ANTICIPATED)* |
 
-#### Resource Utilization
-| Resource | Pristine | MK | Improvement |
+#### Resource Utilization *(ANTICIPATED - NOT MEASURED)*
+| Resource | Pristine | MK | Anticipated Improvement |
 |----------|----------|----| ------------|
-| **Static Memory** | 12KB | 8KB | 33% |
-| **Runtime Memory** | 4KB | 2KB | 50% |
-| **Interrupt Rate** | 1200/sec | 800/sec | 33% |
-| **Context Switches** | 450/sec | 280/sec | 38% |
+| **Static Memory** | 12KB *(NOT MEASURED)* | 8KB *(NOT MEASURED)* | 33% *(ANTICIPATED)* |
+| **Runtime Memory** | 4KB *(NOT MEASURED)* | 2KB *(NOT MEASURED)* | 50% *(ANTICIPATED)* |
+| **Interrupt Rate** | 1200/sec *(NOT MEASURED)* | 800/sec *(NOT MEASURED)* | 33% *(ANTICIPATED)* |
+| **Context Switches** | 450/sec *(NOT MEASURED)* | 280/sec *(NOT MEASURED)* | 38% *(ANTICIPATED)*
 
-### Scalability Analysis
+### Anticipated Scalability Analysis *(NOT MEASURED)*
 
-The MK driver demonstrates superior scalability characteristics:
+> **⚠️ NOTE**: The following scalability characteristics are **ANTICIPATED** based on architectural analysis and have **NOT BEEN MEASURED** in real-world scenarios.
 
-1. **Linear Performance**: Maintains performance under load without bridge overhead
-2. **Reduced Contention**: Single interface eliminates port-to-port locking
-3. **Memory Efficiency**: Constant memory usage vs. per-port scaling
-4. **CPU Efficiency**: Lower interrupt overhead for high-frequency operations
+The MK driver is expected to demonstrate superior scalability characteristics:
+
+1. **Linear Performance**: Expected to maintain performance under load without bridge overhead *(ANTICIPATED)*
+2. **Reduced Contention**: Single interface eliminates port-to-port locking *(ARCHITECTURAL FACT)*
+3. **Memory Efficiency**: Constant memory usage vs. per-port scaling *(ARCHITECTURAL FACT)*
+4. **CPU Efficiency**: Expected lower interrupt overhead for high-frequency operations *(ANTICIPATED)*
 
 ## Conclusion
 
-The ADIN2111-MK driver successfully achieves its design goals:
+The ADIN2111-MK driver achieves its design goals:
 
-1. ✅ **Simplified Configuration**: `ifconfig eth0 172.16.1.100 up` vs. complex bridge setup
-2. ✅ **Reduced Complexity**: 49% code reduction with maintained functionality
-3. ✅ **Improved Performance**: 30-40% CPU reduction, 24% latency improvement
-4. ✅ **Lower Resource Usage**: 46% memory reduction, 33% interrupt reduction
-5. ✅ **Maintained Compatibility**: Full hardware feature preservation
+1. ✅ **Simplified Configuration**: `ifconfig eth0 172.16.1.100 up` vs. complex bridge setup *(VERIFIED)*
+2. ✅ **Reduced Complexity**: 49% code reduction with maintained functionality *(MEASURED)*
+3. ⚠️ **Anticipated Performance**: 30-40% CPU reduction, 24% latency improvement *(NOT MEASURED - ANTICIPATED)*
+4. ⚠️ **Expected Resource Usage**: 46% memory reduction, 33% interrupt reduction *(NOT MEASURED - ANTICIPATED)*
+5. ✅ **Maintained Compatibility**: Full hardware feature preservation *(ARCHITECTURAL FACT)*
 
 The architectural transformation from a dual-port switch to a single ethernet interface represents a successful optimization for embedded applications where switching complexity is unnecessary. The driver maintains full compatibility with the ADIN2111 hardware while providing a dramatically simplified software interface.
 
 ### Recommendations
 
-For embedded applications requiring:
-- **Simple networking**: Use ADIN2111-MK driver
-- **Switch functionality**: Use ADIN2111-Pristine driver
-- **Best performance**: ADIN2111-MK driver is recommended
-- **Bridge integration**: ADIN2111-Pristine driver is required
+> **⚠️ IMPORTANT**: Performance claims in these recommendations are based on **ANTICIPATED RESULTS** and should be validated through actual testing before production deployment.
 
-The ADIN2111-MK driver represents the optimal choice for single-interface embedded networking applications, delivering superior performance with reduced complexity and resource requirements.
+For embedded applications requiring:
+- **Simple networking**: Use ADIN2111-MK driver *(VERIFIED)*
+- **Switch functionality**: Use ADIN2111-Pristine driver *(VERIFIED)*
+- **Expected best performance**: ADIN2111-MK driver is anticipated to perform better *(NOT MEASURED)*
+- **Bridge integration**: ADIN2111-Pristine driver is required *(VERIFIED)*
+
+The ADIN2111-MK driver represents a promising choice for single-interface embedded networking applications, with anticipated superior performance, reduced complexity, and lower resource requirements. **Actual benchmarking is required to validate these expectations.**
