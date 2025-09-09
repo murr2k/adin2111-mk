@@ -10,6 +10,7 @@
 # Then include what we want
 !src/
 !tests/
+!docs/
 !CHANGELOG.md
 !README.md
 !LICENSE
