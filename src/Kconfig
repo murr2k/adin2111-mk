@@ -1,0 +1,32 @@
+#
+# Analog Devices network device configuration for ADIN2111-MK
+# Author: Murray Kopit <murr2k@gmail.com>
+#
+
+config ADIN2111_MK
+	tristate "Analog Devices ADIN2111 Single Interface MAC-PHY driver"
+	depends on SPI
+	depends on NET_SWITCHDEV || !NET_SWITCHDEV
+	select CRC8
+	select PHYLIB
+	help
+	  Say Y here to enable support for Analog Devices ADIN2111
+	  Low Power 10BASE-T1L Ethernet MAC-PHY configured as a single
+	  interface (eth0) driver.
+
+	  This is a simplified version of the ADIN2111 driver that
+	  supports only single Ethernet interface operation, removing
+	  the dual-port switching capabilities for simpler embedded
+	  applications.
+
+	  This driver supports the following features:
+	  - Single Ethernet interface (eth0)
+	  - 10BASE-T1L support
+	  - SPI interface
+	  - Standard Linux network stack integration
+	  - Compatible with ifconfig commands
+
+	  To compile this driver as a module, choose M here: the module
+	  will be called adin2111-mk.
+
+	  If unsure, say N.

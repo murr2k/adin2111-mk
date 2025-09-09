@@ -1,0 +1,53 @@
+# ADIN2111-MK Git Repository
+# Author: Murray Kopit <murr2k@gmail.com>
+# 
+# Only include src/ and tests/ directories
+# Exclude all Claude and development files
+
+# Exclude everything else at root level first
+/*
+
+# Then include what we want
+!src/
+!tests/
+!CHANGELOG.md
+!README.md
+!LICENSE
+!.gitignore
+
+# Explicitly exclude Claude and development files
+.claude/
+.claude-flow/
+.hive-mind/
+.swarm/
+coordination/
+memory/
+claude-flow*
+CLAUDE.md
+.mcp.json
+adin2111-pristine.c
+adin2111.pdf
+br0.sh
+Kconfig.txt
+Makefile.txt
+
+# Exclude build artifacts
+*.o
+*.ko
+*.mod.c
+*.symvers
+*.order
+.tmp_versions/
+modules.builtin
+Module.symvers
+
+# Exclude editor files
+*~
+.*.swp
+.*.swo
+*.orig
+*.rej
+
+# Exclude OS files
+.DS_Store
+Thumbs.db
