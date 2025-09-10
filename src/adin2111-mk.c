@@ -1000,9 +1000,8 @@ static int adin2111_mk_net_open(struct net_device *net_dev)
 		goto out;
 	}
 
-	/* Enable network interface flags for proper operation */
-	net_dev->flags |= IFF_UP | IFF_LOWER_UP;
-	netif_carrier_on(net_dev);
+	/* Interface flags will be managed by link callbacks */
+	net_dev->flags |= IFF_UP;
 
 	ret = adin1110_set_bits(priv, ADIN1110_CONFIG1, ADIN1110_CONFIG1_SYNC, ADIN1110_CONFIG1_SYNC);
 
@@ -1214,12 +1213,39 @@ static const struct ethtool_ops adin2111_mk_ethtool_ops = {
 	.set_msglevel		= adin2111_mk_set_msglevel,
 };
 
+/* Determine if either PHY reports link up */
+static bool adin2111_mk_any_link_up(struct adin2111_mk_priv *priv)
+{
+	bool link = false;
+
+	if (priv->phydev && priv->phydev->link)
+	        link = true;
+
+	if (priv->phydev_p2 && priv->phydev_p2->link)
+	        link = true;
+
+	return link;
+}
+
 static void adin2111_mk_adjust_link(struct net_device *dev)
 {
+	struct adin2111_mk_priv *priv = *(struct adin2111_mk_priv **)netdev_priv(dev);
 	struct phy_device *phydev = dev->phydev;
 
-	if (!phydev->link)
-		phy_print_status(phydev);
+	if (adin2111_mk_any_link_up(priv))
+	        netif_carrier_on(dev);
+	else
+	        netif_carrier_off(dev);
+
+	/* Print status for the PHY that triggered the callback */
+	phy_print_status(phydev);
+
+	/* Flush hardware forwarding entries when a port loses link */
+	if (!phydev->link) {
+	        mutex_lock(&priv->lock);
+	        adin2111_mk_clear_mac_address(priv, ADIN_MAC_FDB_ADDR_SLOT);
+	        mutex_unlock(&priv->lock);
+	}
 }
 
 /* Enhanced SPI check with dual PHY support */
